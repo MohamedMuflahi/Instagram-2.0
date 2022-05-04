@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import { Text,View,StyleSheet,Button,Image,TouchableOpacity} from 'react-native';
+import { Text,View,StyleSheet,TextInput,Image,TouchableOpacity} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -73,6 +73,7 @@ function PhotoTaken({route}){
   return(
    <>
      <Image style={styles.image} source={{uri: image.uri}}/>
+     <TextInput style={styles.caption}></TextInput>
    </>
   )
 }
@@ -111,7 +112,12 @@ const styles = StyleSheet.create({
         color: 'white',
       },
       captureButton:{
-          width:200, height: 200,
+        backgroundColor: 'black',
+        marginRight: 'auto',
+        marginLeft: 'auto',
+        borderRadius:180,
+        marginVertical: 20,
+        width: 75, height: 75,
       },
       image:{
         width: Dimensions.get('window').width,
