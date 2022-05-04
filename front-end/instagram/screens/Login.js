@@ -60,6 +60,7 @@ function Login() {
         value={password}
         placeholder="Password"
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        secureTextEntry={true}
       />
       <TouchableOpacity style={styles.loginButton} onPress={()=>handleLogIn()}>
         <Text style={styles.centerText}>Log In</Text>

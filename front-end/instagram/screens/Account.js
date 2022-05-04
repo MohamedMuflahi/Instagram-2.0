@@ -13,7 +13,8 @@ function Account(){
         .then(data =>{
             setPostsArray(data)
         })
-    })
+    }, [])
+    
     return (
         <View style={styles.mainView}>
         <View style={styles.userHeader}>
