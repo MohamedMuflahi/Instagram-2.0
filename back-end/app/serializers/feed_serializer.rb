@@ -1,4 +1,3 @@
 class FeedSerializer < ActiveModel::Serializer
-  attributes :id, :caption, :image_url
-  belongs_to :user
+  attributes :id, :image_url
 end

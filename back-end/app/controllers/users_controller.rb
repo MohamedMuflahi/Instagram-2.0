@@ -31,7 +31,14 @@ class UsersController < ApplicationController
         user.update(avatar: params[:avatar])
         render json: user
   end
-
+  def posts
+    user = User.find(params[:id])
+    if user
+      render json: user.posts, each_serializer: FeedSerializer 
+    else
+      render json: { message: 'User not found'}
+    end
+  end
   private
 
   def user_params

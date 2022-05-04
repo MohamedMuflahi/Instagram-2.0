@@ -2,12 +2,10 @@ import React, {useState} from 'react';
 import { Text, View,StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Dimensions } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from "react-redux";
 import { setValue } from "../redux/user";
 
-const Stack = createNativeStackNavigator();
 function Login() {
     const dispatch = useDispatch();
     const [username, setUsername] = useState("");

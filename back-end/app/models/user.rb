@@ -22,4 +22,13 @@ class User < ApplicationRecord
     def avatar_url
         avatar.url
     end
+    def following_count
+        followee_follows.length
+    end
+    def follower_count
+        follower_follows.length
+    end
+    def post_count
+        posts.length
+    end
 end

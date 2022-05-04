@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # USER ROUTES
   post '/login', to: 'application#create' # login to account
   get '/profile', to: 'users#profile' #get profile using token
+  get '/user/posts/:id', to: 'users#posts' #get users posts using user id
 
   # POST ROUTES
   post '/post', to: 'posts#create' # create a new post
