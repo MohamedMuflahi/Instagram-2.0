@@ -5,6 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+require 'faker'
 User.destroy_all
 Follow.destroy_all
 Message.destroy_all
@@ -44,16 +45,23 @@ Message.create(content: 'Hello',sender_id:mohamed.id,receiver_id: ben.id)
 Message.create(content: 'How are you?',sender_id:mohamed.id,receiver_id: ben.id)
 Message.create(content: 'Good you?',sender_id:ben.id,receiver_id: mohamed.id)
 puts 'Seeding Posts...'
-post = Post.create({caption: "This is a caption", user_id: mohamed.id});
-post.image.attach(
+20.times do
+    a = Faker::Number.between(from: 1, to: 4)
+    b = Faker::Number.between(from: 1, to: 4)
+    c = Faker::Number.between(from: 1, to: 4)
+    d = Faker::Number.between(from: 1, to: 4)
+    post = Post.create({caption: "This is a caption", user_id: a});
+    post.image.attach(
     io: File.open('./public/post.jpg'),
     filename: 'post.jpg',
     content_type: 'application/jpg'
-  )
+)
+Like.create(user_id:a,post_id: post.id)
+Like.create(user_id:b,post_id: post.id)
+Like.create(user_id:c,post_id: post.id)
+Like.create(user_id:d,post_id: post.id)
+Comment.create(content: "Love it", user_id: b,post_id: post.id)
+end
 puts 'Seeding Like...'
-Like.create(user_id:ben.id,post_id: post.id)
-Like.create(user_id:jack.id,post_id: post.id)
-Like.create(user_id:will.id,post_id: post.id)
 puts 'Seeding Comments...'
-Comment.create(content: "Love it", user_id: will.id,post_id: post.id)
 puts 'Done.'

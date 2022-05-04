@@ -8,7 +8,7 @@ class LikesController < ApplicationController
         end
     end
     def show
-        likes = Like.all.filter { |post| post.id == params[:id] }
+        likes = Like.where(post_id: params[:id])
         render json: likes
     end
     def destroy

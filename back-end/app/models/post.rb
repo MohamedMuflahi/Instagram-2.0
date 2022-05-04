@@ -6,4 +6,10 @@ class Post < ApplicationRecord
     def image_url
         image.url
     end
+    def likes_count
+        likes.length
+    end
+    def comments_count
+        comments.length
+    end
 end

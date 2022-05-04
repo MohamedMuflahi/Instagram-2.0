@@ -17,7 +17,7 @@ class PostsController < ApplicationController
     end
     def feed
         post = Post.all # temporarily get all
-        render json: post , each_serializer: FeedSerializer 
+        render json: post# , each_serializer: FeedSerializer 
     end
     def post_params
         params.permit(:caption, :user_id,:image)

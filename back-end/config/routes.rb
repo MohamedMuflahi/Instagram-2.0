@@ -19,8 +19,8 @@ Rails.application.routes.draw do
   get '/following', to: 'follows#following' # Get followers
 
   # Comment routes
-  post '/comments', to: 'comments#create' # Create a comments
-  get '/comments', to: 'comments#show' # Show all comments for a post
+  post '/comment', to: 'comments#create' # Create a comments
+  get '/comments/:id', to: 'comments#show' # Show all comments for a post
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
