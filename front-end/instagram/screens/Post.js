@@ -18,6 +18,7 @@ function Post(){
     console.log(result);
 
     if (!result.cancelled) {
+      console.log("result",result);
         setImage(result.uri);
     }
 };
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
         margin: 20,
       },
       button: {
-       marginVertical: 500,
+        
       },
       text: {
         fontSize: 18,

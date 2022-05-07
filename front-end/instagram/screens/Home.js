@@ -10,17 +10,20 @@ function Home() {
   const onRefresh = React.useCallback(() => {
       // change this once i fix feed data
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    wait(1000).then(() => FetchFeed());
   }, []);
   useEffect(() => {
+    FetchFeed();
+  }, []);
+  function FetchFeed(){
     fetch("http://192.168.1.7:3000/feed")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setFeedArray(data);
+        setRefreshing(false)
       });
-  }, []);
-
+  }
   return (
     <FlatList
       style={styles.list}

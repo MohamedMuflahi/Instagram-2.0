@@ -7,11 +7,13 @@ import Home from './screens/Home'
 import Post from './screens/Post'
 import Account from './screens/Account'
 import Login from './screens/Login'
+import Camer from './components/Camer'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setValue } from "./redux/user";
+
 const Tab = createBottomTabNavigator();
 
 function PlaceHolder(){
@@ -74,7 +76,7 @@ function PlaceHolder(){
         <Tab.Screen name="Home" component={Home} options={{ title: 'Home' , headerShown: false,
     headerTransparent: true, 
         }}/>
-        <Tab.Screen name="Post" component={Post} options={{ title: 'Post' , headerShown: false,
+        <Tab.Screen name="Post" component={Camer} options={{ title: 'Post' , headerShown: false,
     headerTransparent: true, 
         }}/>
         <Tab.Screen name="Account" component={Account} options={{ title: 'Account' , headerShown: false,

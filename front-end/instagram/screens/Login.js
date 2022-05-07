@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import { Text, View,StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View,StyleSheet, TextInput, TouchableOpacity,Image} from 'react-native';
 import { Dimensions } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from "react-redux";
 import { setValue } from "../redux/user";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 function Login() {
     const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function Login() {
         }
       }
     function handleLogIn(){
-        console.log("login")
+        // console.log("login")
         fetch("http://192.168.1.7:3000/login", {
           method: "POST",
           headers: {
@@ -32,7 +33,7 @@ function Login() {
         })
           .then((response) => response.json())
           .then((data) => {
-              console.log("logged in", data.token)
+              // console.log("logged in", data.token)
             storeData(data.token)
             dispatch(setValue(data.user));
           });
@@ -45,8 +46,9 @@ function Login() {
         colors={["rgba(176,30,137,1)", " rgba(208,49,85,1)"]}
         style={styles.background}
       />
-    <View style={styles.loginView}>
-      <Text style={styles.InstagramText}>Instagram</Text>
+    <View style={styles.loginView}> 
+    {/* logo-instagram */}
+    <Ionicons  style={styles.instaLogo} name="logo-instagram" size={150} color="white" />
       <TextInput
         style={styles.input}
         onChangeText={setUsername}
@@ -123,9 +125,14 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(255, 255, 255, 0.1)"
     },
     InstagramText:{
-        fontSize: 36,
-        marginBottom: 30,
-        color: "white",
+        // fontSize: 36,
+        // marginBottom: 30,
+        // color: "white",
+        width:300, height: 90,
+        marginVertical:20,
+    },
+    instaLogo:{
+      marginBottom: 50,
     },
     centerText:{
         textAlign: 'center',
