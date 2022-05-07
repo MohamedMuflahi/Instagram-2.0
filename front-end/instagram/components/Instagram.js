@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
-import {Text,Button,} from "react-native";
+import {Text,Button,ScrollView} from "react-native";
 import { Surface } from "gl-react-expo";
 import ImageFilters from "react-native-gl-image-filters";
 import { useSelector } from "react-redux";
 import Filter from "./Filter";
 
-const width = Dimensions.get("window").width - 40;
+const width = Dimensions.get("window").width;
+const height = Dimensions.get("window").height/ 1.5;
 
 function Instagram({route,navigation}) {
     const currentUser = useSelector((state) => state.user.value);
@@ -114,9 +115,9 @@ function postImage(image,caption){
     postImage(result.uri,"wow");
   };
   return (
-  <>
-        <Surface style={{ width, height: width }} ref={(ref) => setImage(ref)}>
-          <ImageFilters {...preferences} width={width} height={width}>
+  <ScrollView>
+        <Surface style={{ width:width, height: height }} ref={(ref) => setImage(ref)}>
+          <ImageFilters {...preferences} width={width} height={height}>
             {{ uri: photo }}
           </ImageFilters>
         </Surface>
@@ -134,7 +135,7 @@ function postImage(image,caption){
         <Button title="save" onPress={saveImage}>
         </Button>
         
-  </>
+  </ScrollView>
   );
 }
 const styles = StyleSheet.create({
