@@ -28,13 +28,19 @@ class UsersController < ApplicationController
 
   def update
     user = User.find(params[:id])
-        user.update(avatar: params[:avatar])
-        render json: user
+    if user
+      user.update(avatar: params[:avatar])
+      user.update(bio: params[:bio])
+      user.update(username: params[:bio])
+      render json: user
+    else
+      render json: { errors: "User Not Founc"}
+    end
   end
   def posts
     user = User.find(params[:id])
     if user
-      render json: user.posts, each_serializer: FeedSerializer 
+      render json: user.posts, each_serializer: FeedSerializer
     else
       render json: { message: 'User not found'}
     end
@@ -42,6 +48,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :password,:avatar)
+    params.permit(:username, :password,:avatar,:bio)
   end
 end

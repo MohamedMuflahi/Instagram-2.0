@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   post '/login', to: 'application#create' # login to account
   get '/profile', to: 'users#profile' #get profile using token
   get '/user/posts/:id', to: 'users#posts' #get users posts using user id
+  post '/user/update', to: 'users#update' # update User Data
 
   # POST ROUTES
   post '/post', to: 'posts#create' # create a new post
@@ -16,8 +17,8 @@ Rails.application.routes.draw do
 
   # Follow routes
   post '/follow', to: 'follows#create' # Create a follow
-  get '/followers', to: 'follows#followers' # Get followers
-  get '/following', to: 'follows#following' # Get followers
+  get '/followers/:id', to: 'follows#followers' # Get followers
+  get '/following/:id', to: 'follows#following' # Get followers
 
   # Comment routes
   post '/comment', to: 'comments#create' # Create a comments

@@ -6,13 +6,14 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  FlatList,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dimensions } from "react-native";
 import { useSelector } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
+import PostCard from "../components/PostCard";
 const Stack = createStackNavigator();
 function Account() {
   //let {vw, vh, vmin, vmax} = require('react-native-viewport-units');
@@ -31,13 +32,15 @@ function Account() {
     GetPostData();
   }, []);
   function GetPostData() {
-    fetch(`http://192.168.1.7:3000/user/posts/${currentUser.id}`)
+    fetch(`http://10.129.2.181:3000/user/posts/${currentUser.id}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data)
         setPostsArray(data);
         setRefreshing(false);
       });
   }
+  
   function AccountPage({ navigation }) {
     return (
       <View style={styles.mainView}>
@@ -59,24 +62,21 @@ function Account() {
               <Text style={styles.centerText}>{currentUser.post_count}</Text>
               <Text style={styles.centerText}>Posts</Text>
             </View>
-            <View style={styles.textView}>
+            <TouchableOpacity style={styles.textView} onPress={()=>navigation.navigate("Followers")}>
               <Text style={styles.centerText}>
                 {currentUser.follower_count}
               </Text>
               <Text style={styles.centerText}>Followers</Text>
-            </View>
-            <View style={styles.textView}>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.textView} onPress={()=>navigation.navigate("Following")}>
               <Text style={styles.centerText}>
                 {currentUser.following_count}
               </Text>
               <Text style={styles.centerText}>Following</Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <Text style={styles.usernamText}>{currentUser.username}</Text>
-          <Text style={styles.bioText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </Text>
+          <Text style={styles.bioText}>{currentUser.bio}</Text>
         </View>
         <ScrollView
           style={styles.scroll}
@@ -87,15 +87,53 @@ function Account() {
           }
         >
           {postsArray.map((item) => (
-            <Image
-              key={item.id}
+            <TouchableOpacity  key={item.id}onPress={() => navigation.navigate("Posts")}>
+              <Image
               style={styles.galleryItem}
               source={{ uri: item.image_url }}
             />
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
     );
+  }
+  function FollowersPage(){
+    useEffect(() => {
+      fetch(`http://10.129.2.181:3000/followers/${currentUser.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+    }, [])
+    
+    return(
+      <Text>FOLLOWERS</Text>
+    )
+  }
+  function FollowingsPage(){
+    useEffect(() => {
+      fetch(`http://10.129.2.181:3000/following/${currentUser.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+    }, [])
+    
+    return(
+      <Text>FOLLOWING</Text>
+    )
+  }
+  function PostsView({navigation}){
+    return(
+      <FlatList
+        style={styles.list}
+        data={postsArray}
+        renderItem={({ item }) => <PostCard item={item} navigation={navigation}></PostCard>}
+        keyExtractor={(item) => item.id}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      />
+    )
   }
   function AccountSetting() {
     return (
@@ -119,6 +157,9 @@ function Account() {
         component={AccountSetting}
         options={{ title: "Account Settings", headerTitleAlign: "center" }}
       />
+      <Stack.Screen name="Followers" component={FollowersPage}/>
+      <Stack.Screen name="Following" component={FollowingsPage}/>
+      <Stack.Screen name="Posts" component={PostsView}/>
     </Stack.Navigator>
   );
 }

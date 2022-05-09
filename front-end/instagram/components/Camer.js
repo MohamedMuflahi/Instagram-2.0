@@ -118,7 +118,7 @@ function PhotoTaken({ route,navigation }) {
   formData.append("caption", caption);
   formData.append("user_id", currentUser.id);
   function handleSubmit() {
-    fetch("http://192.168.1.7:3000/post", {
+    fetch("http://10.129.2.181:3000/post", {
       method: "POST",
       body: formData,
       headers: {

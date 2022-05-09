@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import { Text, View,StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Home from './screens/Home'
@@ -18,6 +18,7 @@ const Tab = createBottomTabNavigator();
 
 function PlaceHolder(){
   const currentUser = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(currentUser.id);
   console.log(!!currentUser.id)
   const [token, setToken] = useState('');
@@ -35,23 +36,29 @@ function PlaceHolder(){
   }
   function fetchProfile() {
     
-    fetch("http://192.168.1.7:3000/profile", {
+    fetch("http://10.129.2.181:3000/profile", {
       headers: { Authentication: `Bearer ${token}` },
     })
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        dispatch(setValue(result));
       });
   }
   useEffect(() => {
     getData();
-    if (token) {
-      fetchProfile();
-    }
-  }, [])
+    fetchProfile();
+  }, [token])
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: 'white'
+    },
+  };
   return(
     <>
-      {!!currentUser.id? <NavigationContainer>
+      {!!currentUser.id? <NavigationContainer  theme={MyTheme}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {

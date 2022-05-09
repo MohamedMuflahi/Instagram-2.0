@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 2022_04_27_172737) do
 
   create_table "users", force: :cascade do |t|
     t.string "username"
+    t.string "bio"
     t.string "password_digest"
     t.string "status", default: "offline"
     t.datetime "created_at", precision: 6, null: false

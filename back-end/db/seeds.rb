@@ -14,25 +14,25 @@ Comment.destroy_all
 Post.destroy_all
 
 puts 'Seeding Users...'
-mohamed = User.create!({username: 'Mohamed', password: '123'});
+mohamed = User.create!({username: 'Mohamed', password: '123',bio: 'My name is Mohamed Muflahi'});
 mohamed.avatar.attach(
     io: File.open('./public/default.png'),
     filename: 'default.png',
     content_type: 'application/png'
 )
-ben = User.create!({username: 'Ben', password: '123'});
+ben = User.create!({username: 'Ben', password: '123',bio: 'My name is Ben'});
 ben.avatar.attach(
     io: File.open('./public/default.png'),
     filename: 'default.png',
     content_type: 'application/png'
 )
-will = User.create!({username: 'Will', password: '123'});
+will = User.create!({username: 'Will', password: '123',bio: 'My name is Will'});
 will.avatar.attach(
     io: File.open('./public/default.png'),
     filename: 'default.png',
     content_type: 'application/png'
 )
-jack = User.create!({username: 'Jack', password: '123'});
+jack = User.create!({username: 'Jack', password: '123',bio: 'My name is Jack'});
 jack.avatar.attach(
     io: File.open('./public/default.png'),
     filename: 'default.png',

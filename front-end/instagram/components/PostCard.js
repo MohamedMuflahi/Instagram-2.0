@@ -1,8 +1,23 @@
-import * as React from 'react';
-import { Text, View,StyleSheet,Image} from 'react-native';
+import React, {useState} from 'react';
+import { Text, View,StyleSheet,Image,TouchableOpacity} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-function PostCard({item}){
+function PostCard({item, navigation}){
+    // console.log(item)
+    const [isLiked, setIsLiked] = useState(false);
+    function handleLike(){
+        setIsLiked(!isLiked);
+    }
+    function handleComment(){
+        navigation.navigate('Comments',{
+            post_id: item.id
+        })
+    }
+    function handleOpenLikes(){
+        navigation.navigate('Likes',{
+            post_id: item.id
+        })
+    }
     return(
         <View style={styles.mainView}>
             <View style={styles.cardHeader}>
@@ -17,8 +32,21 @@ function PostCard({item}){
             </View>
             <View style={styles.cardFooter}>
                 <View style={styles.cardHeader}>
-                <Ionicons name="heart-outline" size={16} color="black" style={styles.heartIcon}/>
-                <Ionicons name="chatbubble-outline" size={16} color="black" style={styles.heartIcon}/>
+                <TouchableOpacity onPress={()=>handleLike()}>
+                    {isLiked? <Ionicons name="heart" size={24} color="red" style={styles.heartIcon}/> : <Ionicons name="heart-outline" size={24} color="black" style={styles.heartIcon}/>}
+                </TouchableOpacity>
+                
+                <TouchableOpacity onPress={()=>handleComment()}>
+                    <Ionicons name="chatbubble-outline" size={24} color="black" style={styles.heartIcon}/>
+                </TouchableOpacity>
+                </View>
+                <View style={styles.cardFooter}>
+                <TouchableOpacity onPress={()=>handleOpenLikes()}>
+                <Text style={styles.counter}>Liked by {item.likes_count}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>handleComment()}>
+                <Text style={styles.counter}>View All {item.comments_count} Comments</Text>
+                </TouchableOpacity>
                 </View>
                 <View style={styles.rowview}>
                 <Text style={styles.userName}>{item.user.username}</Text>
@@ -26,7 +54,9 @@ function PostCard({item}){
                 </View>
                 <View style={styles.addCommentView}>
                     <Image style={styles.secondLogo} source={{uri: item.user.avatar_url}}/>
+                    <TouchableOpacity onPress={()=>handleComment()}>
                     <Text style={styles.date}> Add a comment...</Text>
+                    </TouchableOpacity>
                 </View>
                 <Text style={styles.date}>3 days ago</Text>
             </View>
@@ -101,6 +131,9 @@ const styles = StyleSheet.create({
         height: 20,
         borderRadius: 180,
         marginLeft: 10,
+    },counter:{
+        fontSize:10,
+        marginHorizontal: 10,
     },
 
 })

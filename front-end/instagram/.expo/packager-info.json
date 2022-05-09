@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19000,
+  "expoServerNgrokUrl": "https://ac-7qz.orangedevgames.instagram.exp.direct",
+  "packagerNgrokUrl": "https://ac-7qz.orangedevgames.instagram.exp.direct",
+  "ngrokPid": 3836,
   "packagerPid": null,
   "webpackServerPort": null
 }
