@@ -4,6 +4,7 @@ import PostCard from "../components/PostCard";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useSelector } from "react-redux";
 import { Dimensions } from "react-native";
+import UserProfile from "../components/UserProfile";
 const Stack = createStackNavigator();
 const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -31,6 +32,7 @@ function Home() {
         setRefreshing(false)
       });
   }
+  
   function Comments({route}){
     const { post_id } = route.params;
     const [commentsArray, setCommentsArray] = useState([]);
@@ -95,11 +97,21 @@ function Home() {
     )
   }
   function CreateCards({ navigation}){
+    function handleComment(id){
+      navigation.navigate('Comments',{
+          post_id: id
+      })
+  }
+  function handleOpenLikes(id){
+      navigation.navigate('Likes',{
+          post_id: id
+      })
+  }
     return (
       <FlatList
         style={styles.list}
         data={feedArray}
-        renderItem={({ item }) => <PostCard item={item} navigation={navigation}></PostCard>}
+        renderItem={({ item }) => <PostCard item={item} handleComment={handleComment} handleOpenLikes={handleOpenLikes} navigation={navigation}></PostCard>}
         keyExtractor={(item) => item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
@@ -111,6 +123,7 @@ function Home() {
       <Stack.Screen name='cards' component={CreateCards}  options={{headerTitle:  "Instagram" }}/>
       <Stack.Screen name='Comments' component={Comments}/>
       <Stack.Screen name='Likes' component={Likes}/>
+      <Stack.Screen name='UserProfile' component={UserProfile} options={{headerTitle:  ""}} />
     </Stack.Navigator>
   );
 }

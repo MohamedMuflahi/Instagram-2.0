@@ -2,30 +2,34 @@ import React, {useState} from 'react';
 import { Text, View,StyleSheet,Image,TouchableOpacity} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-function PostCard({item, navigation}){
+function PostCard({item, navigation,handleComment,handleOpenLikes}){
     // console.log(item)
     const [isLiked, setIsLiked] = useState(false);
     function handleLike(){
         setIsLiked(!isLiked);
     }
-    function handleComment(){
-        navigation.navigate('Comments',{
-            post_id: item.id
-        })
-    }
-    function handleOpenLikes(){
-        navigation.navigate('Likes',{
-            post_id: item.id
-        })
+    // function handleComment(){
+    //     navigation.navigate('Comments',{
+    //         post_id: item.id
+    //     })
+    // }
+    // function handleOpenLikes(){
+    //     navigation.navigate('Likes',{
+    //         post_id: item.id
+    //     })
+    // }
+    function handleUserProfile(){
+        console.log("userID", item.user.id)
+        navigation.navigate("UserProfile", { user_id: item.user.id})
     }
     return(
         <View style={styles.mainView}>
-            <View style={styles.cardHeader}>
+            <TouchableOpacity style={styles.cardHeader} onPress={handleUserProfile}>
                 {/* <Ionicons name={'home'} size={'25px'} color={'tomato'} />; */}
                 <Image style={styles.logo} source={{uri: item.user.avatar_url}}/>
                 <Text style={styles.cardName}>{item.user.username}</Text>
                 <Ionicons style={styles.threeDots} name="ellipsis-horizontal" size={16} color="black"/>
-            </View>
+            </TouchableOpacity>
             <View>
                 {/*  */}
                 <Image style={styles.mainImage} source={{uri: item.image_url}}/>
@@ -36,15 +40,15 @@ function PostCard({item, navigation}){
                     {isLiked? <Ionicons name="heart" size={24} color="red" style={styles.heartIcon}/> : <Ionicons name="heart-outline" size={24} color="black" style={styles.heartIcon}/>}
                 </TouchableOpacity>
                 
-                <TouchableOpacity onPress={()=>handleComment()}>
+                <TouchableOpacity onPress={()=>handleComment(item.id)}>
                     <Ionicons name="chatbubble-outline" size={24} color="black" style={styles.heartIcon}/>
                 </TouchableOpacity>
                 </View>
                 <View style={styles.cardFooter}>
-                <TouchableOpacity onPress={()=>handleOpenLikes()}>
+                <TouchableOpacity onPress={()=>handleOpenLikes(item.id)}>
                 <Text style={styles.counter}>Liked by {item.likes_count}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={()=>handleComment()}>
+                <TouchableOpacity onPress={()=>handleComment(item.id)}>
                 <Text style={styles.counter}>View All {item.comments_count} Comments</Text>
                 </TouchableOpacity>
                 </View>
@@ -54,7 +58,7 @@ function PostCard({item, navigation}){
                 </View>
                 <View style={styles.addCommentView}>
                     <Image style={styles.secondLogo} source={{uri: item.user.avatar_url}}/>
-                    <TouchableOpacity onPress={()=>handleComment()}>
+                    <TouchableOpacity onPress={()=>handleComment(item.id)}>
                     <Text style={styles.date}> Add a comment...</Text>
                     </TouchableOpacity>
                 </View>

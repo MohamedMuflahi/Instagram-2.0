@@ -45,6 +45,14 @@ class UsersController < ApplicationController
       render json: { message: 'User not found'}
     end
   end
+  def get_user
+    user = User.find(params[:id])
+    if user
+      render json: user
+    else
+      render json: { message: 'Error', authenticated: false }
+    end
+  end
   private
 
   def user_params

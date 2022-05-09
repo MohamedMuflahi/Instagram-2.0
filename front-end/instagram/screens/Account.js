@@ -10,12 +10,14 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dimensions } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { setValue } from "../redux/user";
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PostCard from "../components/PostCard";
 const Stack = createStackNavigator();
 function Account() {
+  const dispatch = useDispatch();
   //let {vw, vh, vmin, vmax} = require('react-native-viewport-units');
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -28,30 +30,49 @@ function Account() {
     setRefreshing(true);
     wait(1000).then(() => GetPostData());
   }, []);
+  const [token, setToken] = useState('');
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@storage_Key')
+      if(value !== null) {
+        // value previously stored
+        setToken(value);
+        console.log(value);
+        fetchProfile();
+        GetPostData();
+      }
+    } catch(e) {
+      // error reading value
+    }
+  }
+  function fetchProfile() {
+    
+    fetch("http://10.129.2.181:3000/profile", {
+      headers: { Authentication: `Bearer ${token}` },
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        dispatch(setValue(result));
+      });
+  }
   useEffect(() => {
-    GetPostData();
+    getData();
   }, []);
   function GetPostData() {
     fetch(`http://10.129.2.181:3000/user/posts/${currentUser.id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        //console.log(data)
         setPostsArray(data);
         setRefreshing(false);
       });
   }
-  
+
   function AccountPage({ navigation }) {
     return (
       <View style={styles.mainView}>
-        <View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("settings")}
-            style={styles.headerButton}
-          >
-            <Ionicons name="cog" size={25} color="black" />
-          </TouchableOpacity>
-        </View>
+       
         <View style={styles.userHeader}>
           <View style={styles.rowView}>
             <Image
@@ -62,13 +83,19 @@ function Account() {
               <Text style={styles.centerText}>{currentUser.post_count}</Text>
               <Text style={styles.centerText}>Posts</Text>
             </View>
-            <TouchableOpacity style={styles.textView} onPress={()=>navigation.navigate("Followers")}>
+            <TouchableOpacity
+              style={styles.textView}
+              onPress={() => navigation.navigate("Followers")}
+            >
               <Text style={styles.centerText}>
                 {currentUser.follower_count}
               </Text>
               <Text style={styles.centerText}>Followers</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.textView} onPress={()=>navigation.navigate("Following")}>
+            <TouchableOpacity
+              style={styles.textView}
+              onPress={() => navigation.navigate("Following")}
+            >
               <Text style={styles.centerText}>
                 {currentUser.following_count}
               </Text>
@@ -87,53 +114,190 @@ function Account() {
           }
         >
           {postsArray.map((item) => (
-            <TouchableOpacity  key={item.id}onPress={() => navigation.navigate("Posts")}>
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => navigation.navigate("Posts")}
+            >
               <Image
-              style={styles.galleryItem}
-              source={{ uri: item.image_url }}
-            />
+                style={styles.galleryItem}
+                source={{ uri: item.image_url }}
+              />
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
     );
   }
-  function FollowersPage(){
+  function Comments({route}){
+    const { post_id } = route.params;
+    const [commentsArray, setCommentsArray] = useState([]);
+    useEffect(() => {
+      fetch(`http://10.129.2.181:3000/comments/${post_id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
+        setCommentsArray(data);
+      });
+    }, [])
+    return(
+      <FlatList
+      data={commentsArray}
+      renderItem={({ item }) => <CommentCard item={item} ></CommentCard>}
+      keyExtractor={(item) => item.id}
+    />
+      
+    )
+  }
+  function CommentCard({item}){
+    console.log(item)
+    return(
+      <View style={styles.cardView}>
+        <Image style={styles.commentLogo} source={{uri: item.user.avatar_url}}/>
+        <Text>
+        <Text style={styles.usernameText}>{item.user.username}</Text>
+      <Text style={styles.commentText}> {item.content}</Text>
+        </Text>
+      </View>
+    )
+  }
+  function Likes({route}){
+    const { post_id } = route.params;
+    const [likeArray, setLikeArray] = useState([])
+    useEffect(() => {
+      fetch(`http://10.129.2.181:3000/likes/${post_id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
+        setLikeArray(data);
+      });
+    }, [])
+    
+    return(
+      <FlatList
+      data={likeArray}
+      renderItem={({ item }) => <LikeCard item={item}></LikeCard>}
+      keyExtractor={(item) => item.id}
+    />
+      
+    )
+  }
+  function LikeCard({item}){
+    return(
+      <View style={styles.cardView}>
+        <Image style={styles.commentLogo} source={{uri: item.user.avatar_url}}/>
+        <Text>
+        <Text style={styles.usernameText}>{item.user.username}</Text>
+        </Text>
+      </View>
+    )
+  }
+  function FollowersPage({ navigation }) {
+    const [followersArray, setFollowersArray] = useState([]);
     useEffect(() => {
       fetch(`http://10.129.2.181:3000/followers/${currentUser.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-    }, [])
-    
-    return(
-      <Text>FOLLOWERS</Text>
-    )
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          setFollowersArray(data);
+        });
+    }, []);
+    function FollowerCard({ item }) {
+      return (
+        <View style={styles.cardView}>
+          <Image style={styles.commentLogo} source={{ uri: item.avatar_url }} />
+          <Text>
+            <Text style={styles.usernameText}>{item.username}</Text>
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <>
+        {followersArray.length > 0 ? (
+          <FlatList
+            style={styles.list}
+            data={followersArray}
+            renderItem={({ item }) => (
+              <FollowerCard item={item} navigation={navigation}></FollowerCard>
+            )}
+            keyExtractor={(item) => item.id}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+        ) : (
+          <Text style={styles.EmptyText}>No Followers :C</Text>
+        )}
+      </>
+    );
   }
-  function FollowingsPage(){
+  function FollowingsPage({ navigation }) {
+    const [followingArray, setFollowingArray] = useState([]);
     useEffect(() => {
       fetch(`http://10.129.2.181:3000/following/${currentUser.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-    }, [])
-    
-    return(
-      <Text>FOLLOWING</Text>
-    )
+        .then((response) => response.json())
+        .then((data) => {
+          //console.log(data);
+          setFollowingArray(data);
+        });
+    }, []);
+    function FollowingCard({ item }) {
+      return (
+        <View style={styles.cardView}>
+          <Image style={styles.commentLogo} source={{ uri: item.avatar_url }} />
+          <Text>
+            <Text style={styles.usernameText}>{item.username}</Text>
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <>
+        {followingArray.length > 0 ? (
+          <FlatList
+            style={styles.list}
+            data={followingArray}
+            renderItem={({ item }) => (
+              <FollowingCard
+                item={item}
+                navigation={navigation}
+              ></FollowingCard>
+            )}
+            keyExtractor={(item) => item.id}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          />
+        ) : (
+          <Text style={styles.EmptyText}>You Are Not Following Anyone! Go make Some Friends Loser!</Text>
+        )}
+      </>
+    );
   }
-  function PostsView({navigation}){
-    return(
+  function PostsView({ navigation }) {
+    function handleComment(id){
+      navigation.navigate("AccountComments",{
+        post_id: id
+    })
+    }
+    function handleOpenLikes(id){
+    navigation.navigate("AccountLikes",{
+      post_id: id
+  })
+    }
+    return (
       <FlatList
         style={styles.list}
         data={postsArray}
-        renderItem={({ item }) => <PostCard item={item} navigation={navigation}></PostCard>}
+        renderItem={({ item }) => (
+          <PostCard item={item} navigation={navigation} handleComment={handleComment} handleOpenLikes={handleOpenLikes}></PostCard>
+        )}
         keyExtractor={(item) => item.id}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
-    )
+    );
   }
   function AccountSetting() {
     return (
@@ -155,11 +319,13 @@ function Account() {
       <Stack.Screen
         name="settings"
         component={AccountSetting}
-        options={{ title: "Account Settings", headerTitleAlign: "center" }}
+        options={{ title: "Edit Profile", headerTitleAlign: "center" }}
       />
-      <Stack.Screen name="Followers" component={FollowersPage}/>
-      <Stack.Screen name="Following" component={FollowingsPage}/>
-      <Stack.Screen name="Posts" component={PostsView}/>
+      <Stack.Screen name="Followers" component={FollowersPage} />
+      <Stack.Screen name="Following" component={FollowingsPage} />
+      <Stack.Screen name="Posts" component={PostsView} />
+      <Stack.Screen name="AccountLikes" component={Likes} options={{ title: "Likes"}}/>
+      <Stack.Screen name="AccountComments" component={Comments} options={{ title: "Comments"}}/>
     </Stack.Navigator>
   );
 }
@@ -222,6 +388,33 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     marginLeft: "auto",
     marginVertical: 20,
+  },
+  cardView: {
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: 20,
+    marginVertical: 15,
+    maxWidth: Dimensions.get("window").width - 100,
+    backgroundColor: "white",
+    // width:  Dimensions.get("window").width,
+  },
+  commentLogo: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+  },
+  usernameText: {
+    fontWeight: "bold",
+  },
+  commentText: {},
+  EmptyText:{
+    textAlign:"center",
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginTop: "auto",
+    marginBottom: "auto",
+    fontSize: 18,
+
   },
 });
 export default Account;
