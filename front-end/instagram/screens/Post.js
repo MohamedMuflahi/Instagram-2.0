@@ -29,16 +29,18 @@ function Post(){
           <Camer></Camer>
         ) : (
           <>
-            <Button
+            <TouchableOpacity
               style={styles.button}
-              title="Pick an image from camera roll"
               onPress={pickImage}
-            />
-            <Button
+            >
+              <Text>Pick an image from camera roll</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.button}
-              title="Take A Photo"
               onPress={() => setToggleCamera(!toggleCamera)}
-            />
+              >
+              <Text>Take A Photo</Text>
+              </TouchableOpacity>
           </>
         )}
         {image && (

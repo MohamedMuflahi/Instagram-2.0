@@ -10,12 +10,12 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
+import { useIsFocused } from "@react-navigation/native";
+import * as FaceDetector from 'expo-face-detector';
 import { createStackNavigator } from "@react-navigation/stack";
 import { Dimensions } from "react-native";
-import { useIsFocused } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSelector } from "react-redux";
-import * as FaceDetector from 'expo-face-detector';
 import Instagram from './Instagram'
 const Stack = createStackNavigator();
 function OptionPicker({ navigation }) {
@@ -76,7 +76,7 @@ function OptionPicker({ navigation }) {
         >
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.button}
+              style={styles.flipButton}
               onPress={() => {
                 setType(
                   type === Camera.Constants.Type.back
@@ -85,7 +85,8 @@ function OptionPicker({ navigation }) {
                 );
               }}
             >
-              <Text style={styles.text}> Flip </Text>
+             <Ionicons name="camera-reverse" size={50} color="white" />
+              {/* <Text style={styles.text}> Flip</Text> */}
             </TouchableOpacity>
           </View>
         </Camera>
@@ -109,7 +110,6 @@ function PhotoTaken({ route,navigation }) {
   const { image } = route.params;
   let localUri = image.uri;
   let filename = localUri.split("/").pop();
-
   // Infer the type of the image
   let match = /\.(\w+)$/.exec(filename);
   let type = match ? `image/${match[1]}` : `image`;
@@ -175,16 +175,19 @@ function ImageChoose({ navigation }) {
   };
   return (
     <>
-      <Button
-        style={styles.button}
-        title="Pick an image from camera roll"
-        onPress={pickImage}
-      />
-      <Button
-        style={styles.button}
-        title="Take A Photo"
-        onPress={() => navigation.navigate("Take Picture")}
-      />
+    <TouchableOpacity
+              style={styles.button}
+              onPress={pickImage}
+            >
+             <Ionicons name="albums" size={100} color="black" />
+            </TouchableOpacity>
+            <Text style={styles.ortext} >OR ...</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate("Take Picture")}
+              >
+              <Ionicons name="camera" size={100} color="black" />
+              </TouchableOpacity>
     </>
   );
 }
@@ -221,6 +224,11 @@ const styles = StyleSheet.create({
   // mainView:{
   //      flex: 1, alignItems: 'center', justifyContent: 'center'
   // },
+  ortext:{
+    marginRight: "auto",
+    marginLeft: "auto",
+    fontSize: 24
+  },
   container: {
     flex: 1,
   },
@@ -234,9 +242,13 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   button: {
-    flex: 0.1,
-    alignSelf: "flex-end",
     alignItems: "center",
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+  flipButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-end'
   },
   text: {
     fontSize: 18,

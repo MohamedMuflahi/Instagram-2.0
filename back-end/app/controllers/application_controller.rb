@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
             token = encode(payload)
             # result = serialize(user, UserSerializer).
             # merge(serialize(token, UserSerializer))
-            x = user.as_json(only: [:id, :username,:bio], methods: [:avatar_url,:follower_count,:following_count, :post_count]) 
+            x = user.as_json(only: [:id, :username,:bio], methods: [:avatar_url,:follower_count,:following_count, :post_count,:following_id]) 
             # include: { posts: {include: { comments: {only: :body } },only: :title } }
             render json: {user: x, token: token}
             

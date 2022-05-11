@@ -12,6 +12,9 @@ Message.destroy_all
 Like.destroy_all
 Comment.destroy_all
 Post.destroy_all
+Tag.destroy_all
+FollowedTag.destroy_all
+PostTag.destroy_all
 
 puts 'Seeding Users...'
 mohamed = User.create!({username: 'Mohamed', password: '123',bio: 'My name is Mohamed Muflahi'});
@@ -61,6 +64,9 @@ Like.create(user_id:b,post_id: post.id)
 Like.create(user_id:c,post_id: post.id)
 Like.create(user_id:d,post_id: post.id)
 Comment.create(content: "Love it", user_id: b,post_id: post.id)
+tags = Tag.create(name: Faker::Book.genre)
+FollowedTag.create(user_id: a,tag_id: tags.id)
+PostTag.create(post_id: post.id,tag_id: tags.id)
 end
 puts 'Seeding Like...'
 puts 'Seeding Comments...'

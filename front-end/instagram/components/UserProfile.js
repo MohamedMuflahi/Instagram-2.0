@@ -16,7 +16,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PostCard from "../components/PostCard";
 const Stack = createStackNavigator();
-function UserProfile({route}) {;
+
+function UserProfile({route}) {
+  const currentUser = useSelector((state) => state.user.value);
+
     const {user_id} = route.params;
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -25,48 +28,76 @@ function UserProfile({route}) {;
   const [postsArray, setPostsArray] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [user,setUser] = useState({});
+  const [isFollowed, setIsFollowed] = useState(false)
     
   const onRefresh = React.useCallback(() => {
     // change this once i fix feed data
     setRefreshing(true);
     wait(1000).then(() => GetPostData());
   }, []);
-  const [token, setToken] = useState('');
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@storage_Key')
-      if(value !== null) {
-        // value previously stored
-        setToken(value);
-        console.log(value);
-      }
-    } catch(e) {
-      // error reading value
-    }
-  }
   function getUser(){
     fetch(`http://10.129.2.181:3000/user/${user_id}`)
     .then((res) => res.json())
     .then((data) => {
       console.log(data)
-      getData();
       GetPostData();
       setUser(data)
     });
   }
   useEffect(() => {
     getUser();
+    CheckFollowed();
   }, []);
   function GetPostData() {
     fetch(`http://10.129.2.181:3000/user/posts/${user_id}`)
       .then((res) => res.json())
       .then((data) => {
-        //console.log(data)
+        console.log(data)
         setPostsArray(data);
         setRefreshing(false);
       });
   }
-
+  function CheckFollowed(){
+    currentUser.following_id.forEach((e)=>{
+      if(user_id === e){
+        setIsFollowed(true);
+      }
+    })
+  }
+  function handleUnfollow(){
+    fetch("http://10.129.2.181:3000/unfollow", {
+      method: "POST",
+      body: JSON.stringify({
+        user_id: currentUser.id,
+        followee_id: user_id
+      }),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setIsFollowed(false);
+      })
+  }
+  function handlefollow(){
+    fetch("http://10.129.2.181:3000/follow", {
+      method: "POST",
+      body: JSON.stringify({
+        follower_id: currentUser.id,
+        followee_id: user_id
+      }),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setIsFollowed(true);
+      })
+  }
   function AccountPage({ navigation }) {
     return (
       <View style={styles.mainView}>
@@ -101,6 +132,11 @@ function UserProfile({route}) {;
           </View>
           <Text style={styles.usernamText}>{user.username}</Text>
           <Text style={styles.bioText}>{user.bio}</Text>
+          {isFollowed? <TouchableOpacity onPress={handleUnfollow} style={styles.appButtonContainer2}>
+            <Text style={styles.appButtonText2}>Unfollow</Text>
+          </TouchableOpacity> : <TouchableOpacity onPress={handlefollow} style={styles.appButtonContainer}>
+            <Text style={styles.appButtonText}>Follow</Text>
+          </TouchableOpacity>}
         </View>
         <ScrollView
           style={styles.scroll}
@@ -397,6 +433,35 @@ const styles = StyleSheet.create({
     marginBottom: "auto",
     fontSize: 18,
 
+  }, appButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#2196f3",
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginTop: 20,
+    width: 100,
+  },
+  appButtonText: {
+    fontSize: 10,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase",
+  },
+  appButtonContainer2: {
+    elevation: 8,
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginTop: 20,
+    width: 100,
+  },
+  appButtonText2: {
+    fontSize: 10,
+    color: "black",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase",
   },
 });
 export default UserProfile;

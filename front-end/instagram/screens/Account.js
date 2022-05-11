@@ -6,15 +6,20 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  TextInput,
   FlatList,
+  Button,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dimensions } from "react-native";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setValue } from "../redux/user";
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PostCard from "../components/PostCard";
+import { Camera } from "expo-camera";
+import { useIsFocused } from "@react-navigation/native";
+import * as FaceDetector from "expo-face-detector";
 const Stack = createStackNavigator();
 function Account() {
   const dispatch = useDispatch();
@@ -28,39 +33,15 @@ function Account() {
   const onRefresh = React.useCallback(() => {
     // change this once i fix feed data
     setRefreshing(true);
-    wait(1000).then(() => GetPostData());
+    wait(1000).then(() => {
+      GetPostData(currentUser.id);
+    });
   }, []);
-  const [token, setToken] = useState('');
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@storage_Key')
-      if(value !== null) {
-        // value previously stored
-        setToken(value);
-        console.log(value);
-        fetchProfile();
-        GetPostData();
-      }
-    } catch(e) {
-      // error reading value
-    }
-  }
-  function fetchProfile() {
-    
-    fetch("http://10.129.2.181:3000/profile", {
-      headers: { Authentication: `Bearer ${token}` },
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        dispatch(setValue(result));
-      });
-  }
   useEffect(() => {
-    getData();
+    GetPostData(currentUser.id);
   }, []);
-  function GetPostData() {
-    fetch(`http://10.129.2.181:3000/user/posts/${currentUser.id}`)
+  function GetPostData(id) {
+    fetch(`http://10.129.2.181:3000/user/posts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         //console.log(data)
@@ -72,7 +53,14 @@ function Account() {
   function AccountPage({ navigation }) {
     return (
       <View style={styles.mainView}>
-       
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("settings")}
+            style={styles.headerButton}
+          >
+            <Ionicons name="cog" size={25} color="black" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.userHeader}>
           <View style={styles.rowView}>
             <Image
@@ -128,68 +116,72 @@ function Account() {
       </View>
     );
   }
-  function Comments({route}){
+  function Comments({ route }) {
     const { post_id } = route.params;
     const [commentsArray, setCommentsArray] = useState([]);
     useEffect(() => {
       fetch(`http://10.129.2.181:3000/comments/${post_id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data);
-        setCommentsArray(data);
-      });
-    }, [])
-    return(
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          setCommentsArray(data);
+        });
+    }, []);
+    return (
       <FlatList
-      data={commentsArray}
-      renderItem={({ item }) => <CommentCard item={item} ></CommentCard>}
-      keyExtractor={(item) => item.id}
-    />
-      
-    )
+        data={commentsArray}
+        renderItem={({ item }) => <CommentCard item={item}></CommentCard>}
+        keyExtractor={(item) => item.id}
+      />
+    );
   }
-  function CommentCard({item}){
-    console.log(item)
-    return(
+  function CommentCard({ item }) {
+    console.log(item);
+    return (
       <View style={styles.cardView}>
-        <Image style={styles.commentLogo} source={{uri: item.user.avatar_url}}/>
+        <Image
+          style={styles.commentLogo}
+          source={{ uri: item.user.avatar_url }}
+        />
         <Text>
-        <Text style={styles.usernameText}>{item.user.username}</Text>
-      <Text style={styles.commentText}> {item.content}</Text>
+          <Text style={styles.usernameText}>{item.user.username}</Text>
+          <Text style={styles.commentText}> {item.content}</Text>
         </Text>
       </View>
-    )
+    );
   }
-  function Likes({route}){
+  function Likes({ route }) {
     const { post_id } = route.params;
-    const [likeArray, setLikeArray] = useState([])
+    const [likeArray, setLikeArray] = useState([]);
     useEffect(() => {
       fetch(`http://10.129.2.181:3000/likes/${post_id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data);
-        setLikeArray(data);
-      });
-    }, [])
-    
-    return(
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log(data);
+          setLikeArray(data);
+        });
+    }, []);
+
+    return (
       <FlatList
-      data={likeArray}
-      renderItem={({ item }) => <LikeCard item={item}></LikeCard>}
-      keyExtractor={(item) => item.id}
-    />
-      
-    )
+        data={likeArray}
+        renderItem={({ item }) => <LikeCard item={item}></LikeCard>}
+        keyExtractor={(item) => item.id}
+      />
+    );
   }
-  function LikeCard({item}){
-    return(
+  function LikeCard({ item }) {
+    return (
       <View style={styles.cardView}>
-        <Image style={styles.commentLogo} source={{uri: item.user.avatar_url}}/>
+        <Image
+          style={styles.commentLogo}
+          source={{ uri: item.user.avatar_url }}
+        />
         <Text>
-        <Text style={styles.usernameText}>{item.user.username}</Text>
+          <Text style={styles.usernameText}>{item.user.username}</Text>
         </Text>
       </View>
-    )
+    );
   }
   function FollowersPage({ navigation }) {
     const [followersArray, setFollowersArray] = useState([]);
@@ -269,28 +261,35 @@ function Account() {
             }
           />
         ) : (
-          <Text style={styles.EmptyText}>You Are Not Following Anyone! Go make Some Friends Loser!</Text>
+          <Text style={styles.EmptyText}>
+            You Are Not Following Anyone! Go make Some Friends Loser!
+          </Text>
         )}
       </>
     );
   }
   function PostsView({ navigation }) {
-    function handleComment(id){
-      navigation.navigate("AccountComments",{
-        post_id: id
-    })
+    function handleComment(id) {
+      navigation.navigate("AccountComments", {
+        post_id: id,
+      });
     }
-    function handleOpenLikes(id){
-    navigation.navigate("AccountLikes",{
-      post_id: id
-  })
+    function handleOpenLikes(id) {
+      navigation.navigate("AccountLikes", {
+        post_id: id,
+      });
     }
     return (
       <FlatList
         style={styles.list}
         data={postsArray}
         renderItem={({ item }) => (
-          <PostCard item={item} navigation={navigation} handleComment={handleComment} handleOpenLikes={handleOpenLikes}></PostCard>
+          <PostCard
+            item={item}
+            navigation={navigation}
+            handleComment={handleComment}
+            handleOpenLikes={handleOpenLikes}
+          ></PostCard>
         )}
         keyExtractor={(item) => item.id}
         refreshControl={
@@ -299,13 +298,185 @@ function Account() {
       />
     );
   }
-  function AccountSetting() {
+  function AccountSetting({ navigation }) {
+    const [username, setUsername] = useState("");
+    const [bio, setBio] = useState("");
+    function handleChangeDetails() {
+      fetch("http://10.129.2.181:3000/user/update", {
+        method: "POST",
+        body: JSON.stringify({
+          user_id: currentUser.id,
+          username,
+          bio,
+        }),
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          navigation.navigate("page");
+        });
+    }
     return (
       <View>
-        <Image
-          style={styles.logoEdit}
-          source={{ uri: currentUser.avatar_url }}
-        />
+        <View>
+          <TouchableOpacity onPress={() => navigation.navigate("editprofile")}>
+            <Image
+              style={styles.logoEdit}
+              source={{ uri: currentUser.avatar_url }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            onChangeText={setUsername}
+            value={username}
+            placeholder="Username"
+            placeholderTextColor="rgb(0, 0, 0)"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={setBio}
+            value={bio}
+            placeholder="Bio"
+            placeholderTextColor="rgb(0, 0, 0)"
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.checkmark}
+          onPress={() => handleChangeDetails()}
+        >
+          <Ionicons name="ios-checkmark" size={50} color="rgb(72,145,235)" />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  function SubmitScreen({ navigation, route }) {
+    const currentUser = useSelector((state) => state.user.value);
+    const { image } = route.params;
+    let localUri = image.uri;
+    let filename = localUri.split("/").pop();
+    // Infer the type of the image
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    let formData = new FormData();
+    formData.append("avatar", { uri: localUri, name: filename, type });
+    formData.append("user_id", currentUser.id);
+    function handleSubmit() {
+      console.log('clicked')
+      fetch("http://10.129.2.181:3000/user/updateAvatar", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          navigation.navigate("page");
+        });
+    }
+    return (
+      <View>
+        <Image style={styles.circleImage} source={{ uri: image.uri }} />
+        <TouchableOpacity
+          onPress={() => handleSubmit()}
+          style={styles.checkmark2}
+        >
+          <Ionicons name="ios-checkmark" size={50} color="rgb(72,145,235)" />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  function EditProfile({ navigation }) {
+    const isFocused = useIsFocused();
+    const [hasPermission, setHasPermission] = useState(null);
+    const [isSmiling, setIsSmiling] = useState(false)
+    const [type, setType] = useState(Camera.Constants.Type.back);
+    let camera;
+    const takePicture = () => {
+      if (camera) {
+        camera.takePictureAsync({ onPictureSaved: onPictureSaved });
+      }
+    };
+
+    const onPictureSaved = (photo) => {
+      navigation.navigate("submitscreen", {
+        image: photo,
+      });
+      // here we will do the magic after it saves the photo
+      console.log("photo", photo);
+    };
+    useEffect(() => {
+      (async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setHasPermission(status === "granted");
+      })();
+    }, []);
+
+    if (hasPermission === null) {
+      return <View />;
+    }
+    if (hasPermission === false) {
+      return <Text>No access to camera</Text>;
+    }
+    const turnOnCamera = () => {};
+    function handleFacesDetected({ faces, image }) {
+      if(faces.length > 0){
+        if(faces[0].smilingProbability > 0.5){
+          setIsSmiling(true)
+        }
+      }
+      // console.log(image);
+    }
+    return (
+      <View style={styles.container}>
+        {isFocused && (
+          <Camera
+            style={styles.camera}
+            type={type}
+            ref={(ref) => {
+              camera = ref;
+            }}
+            onFacesDetected={handleFacesDetected}
+            faceDetectorSettings={{
+              mode: FaceDetector.FaceDetectorMode.fast,
+              detectLandmarks: FaceDetector.FaceDetectorLandmarks.all,
+              runClassifications: FaceDetector.FaceDetectorClassifications.all,
+              minDetectionInterval: 100,
+              tracking: true,
+            }}
+          >
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  setType(
+                    type === Camera.Constants.Type.back
+                      ? Camera.Constants.Type.front
+                      : Camera.Constants.Type.back
+                  );
+                }}
+              >
+                <Text style={styles.text}> Flip </Text>
+              </TouchableOpacity>
+            </View>
+          </Camera>
+        )}
+
+        {isSmiling? <TouchableOpacity
+          style={styles.captureButton}
+          onPress={() => {
+            takePicture();
+          }}
+        >
+          <Ionicons name="ios-stop-circle-outline" size={75} color="black" />
+          {/* ios-stop-circle-outline */}
+        </TouchableOpacity>: null}
       </View>
     );
   }
@@ -324,8 +495,26 @@ function Account() {
       <Stack.Screen name="Followers" component={FollowersPage} />
       <Stack.Screen name="Following" component={FollowingsPage} />
       <Stack.Screen name="Posts" component={PostsView} />
-      <Stack.Screen name="AccountLikes" component={Likes} options={{ title: "Likes"}}/>
-      <Stack.Screen name="AccountComments" component={Comments} options={{ title: "Comments"}}/>
+      <Stack.Screen
+        name="AccountLikes"
+        component={Likes}
+        options={{ title: "Likes" }}
+      />
+      <Stack.Screen
+        name="AccountComments"
+        component={Comments}
+        options={{ title: "Comments" }}
+      />
+      <Stack.Screen
+        name="editprofile"
+        component={EditProfile}
+        options={{ title: "" }}
+      />
+      <Stack.Screen
+        name="submitscreen"
+        component={SubmitScreen}
+        options={{ title: "" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -407,14 +596,75 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   commentText: {},
-  EmptyText:{
-    textAlign:"center",
+  EmptyText: {
+    textAlign: "center",
     marginRight: "auto",
     marginLeft: "auto",
     marginTop: "auto",
     marginBottom: "auto",
     fontSize: 18,
-
   },
+  input: {
+    width: "80%",
+    height: "20%",
+    borderRadius: 10,
+    marginVertical: "2%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    textAlign: "center",
+    color: "black",
+    borderColor: "rgba(0,0,0,0.5)",
+    borderWidth: 1,
+  },
+  checkmark: {
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginTop: 10,
+  },
+  checkmark2: {
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginTop: 50,
+  },
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    margin: 20,
+  },
+  captureButton: {
+    marginRight: "auto",
+    marginLeft: "auto",
+    borderRadius: 180,
+    marginVertical: 20,
+    width: 75,
+    height: 75,
+  },
+  container: {
+    flex: 1,
+  },
+  camera: {
+    flex: 1,
+  },
+  button: {
+    flex: 0.1,
+    alignSelf: "flex-end",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 18,
+    color: "white",
+  },
+  circleImage: {
+    width: 300,
+    height: 300,
+    marginRight: "auto",
+    marginLeft: "auto",
+    borderRadius: 180,
+  },
+  btn: {
+    width: Dimensions.get("window").width * 0.02,
+  },
+ 
 });
 export default Account;

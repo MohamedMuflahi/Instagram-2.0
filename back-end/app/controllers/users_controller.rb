@@ -27,11 +27,26 @@ class UsersController < ApplicationController
   end
 
   def update
-    user = User.find(params[:id])
+    user = User.find_by(id:params[:user_id])
     if user
-      user.update(avatar: params[:avatar])
-      user.update(bio: params[:bio])
-      user.update(username: params[:bio])
+      user.username = params[:username]
+      user.bio = params[:bio]
+      # user.password = user.password;
+      user.save!(validate: false)
+      render json: user
+    else
+      render json: { errors: "User Not Founc"}
+    end
+  end
+
+  def updateAvatar
+    user = User.find(params[:user_id])
+    if user
+      user.avatar.purge
+      user.avatar.attach(params[:avatar])
+      puts user.errors.full_messages
+      user.save!(validate: false)
+      # user.save!(validate: false)
       render json: user
     else
       render json: { errors: "User Not Founc"}
@@ -56,6 +71,10 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:username, :password,:avatar,:bio)
+    params.require(:user).permit(:user_id,:username, :password,:avatar,:bio)
   end
+  def update_params
+    params.require(:user).permit(:username,:bio)
+  end
+
 end

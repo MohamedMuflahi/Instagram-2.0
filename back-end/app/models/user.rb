@@ -17,8 +17,8 @@ class User < ApplicationRecord
     has_many :likes
     has_one_attached :avatar
     has_secure_password
-    validates :username, presence: true, uniqueness: { case_sensitive: false }
-    validates :password, presence: true
+    # validates :username, presence: true, uniqueness: { case_sensitive: false }
+    # validates :password, presence: true
     def avatar_url
         avatar.url
     end
@@ -30,5 +30,15 @@ class User < ApplicationRecord
     end
     def post_count
         posts.length
+    end
+    has_many :followed_tags
+    has_many :tags,through: :followed_tags
+
+    def following_id
+        x =[]
+        followees.each do |f|
+            x.push(f.id)
+        end
+        x
     end
 end
