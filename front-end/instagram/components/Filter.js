@@ -4,7 +4,7 @@ import { StyleSheet, View,Text,Slider} from 'react-native';
 
 export default ({ value, name, minimum, maximum, step = 1, onChange }) => (
   <View style={styles.container}>
-    <Text style={styles.text}>{name}</Text>
+    <Text style={styles.text}>{name.toUpperCase()}</Text>
     <Slider
       style={styles.slider}
       value={value}
@@ -18,12 +18,15 @@ export default ({ value, name, minimum, maximum, step = 1, onChange }) => (
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: 300,
     paddingLeft: 20,
+    marginVertical: 10,
+    borderRadius: 2,
+    borderWidth: 0.1,
   },
   text: { textAlign: 'center' },
-  slider: { width: 150 },
+  slider: { width: 300 },
 });

@@ -37,7 +37,7 @@ function PlaceHolder(){
   }
   function fetchProfile() {
     
-    fetch("http://192.168.1.7:3000/profile", {
+    fetch("http://10.129.2.181:3000/profile", {
       headers: { Authentication: `Bearer ${token}` },
     })
       .then((response) => response.json())

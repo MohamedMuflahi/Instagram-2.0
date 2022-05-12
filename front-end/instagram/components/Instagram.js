@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Dimensions, StyleSheet } from "react-native";
-import {Text,Button,ScrollView} from "react-native";
+import {View,Text,ScrollView, TouchableOpacity} from "react-native";
 import { Surface } from "gl-react-expo";
 import ImageFilters from "react-native-gl-image-filters";
 import { useSelector } from "react-redux";
 import Filter from "./Filter";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height/ 1.5;
@@ -92,7 +93,7 @@ function postImage(image,caption){
     formData.append("caption", caption);
     formData.append("user_id", currentUser.id);
    // console.log(formData);
-    fetch("http://192.168.1.7:3000/post", {
+    fetch("http://10.129.2.181:3000/post", {
         method: "POST",
         body: formData,
         headers: {
@@ -121,6 +122,7 @@ function postImage(image,caption){
             {{ uri: photo }}
           </ImageFilters>
         </Surface>
+        <View  style={styles.filter}>
         {settings.map((filter) => (
           <Filter
             key={filter.name}
@@ -132,8 +134,10 @@ function postImage(image,caption){
             onChange={(value) => setPreferences({...preferences, [filter.name]: value })}
           />
         ))}
-        <Button title="save" onPress={saveImage}>
-        </Button>
+        </View>
+        <TouchableOpacity style={styles.checkmark} ononPress={saveImage}>
+          <Ionicons name="ios-checkmark" size={50} color="black" />
+        </TouchableOpacity>
         
   </ScrollView>
   );
@@ -141,6 +145,16 @@ function postImage(image,caption){
 const styles = StyleSheet.create({
   content: { marginTop: 20, marginHorizontal: 20 },
   button: { marginVertical: 20, borderRadius: 0 },
+  filter:{
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  checkmark:{
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
 });
 
 export default Instagram;

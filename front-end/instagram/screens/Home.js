@@ -15,8 +15,9 @@ function Home() {
   const currentUser = useSelector((state) => state.user.value);
   // console.log(currentUser)
   const [feedArray, setFeedArray] = useState([]);
- 
+  console.log(feedArray)
   const [refreshing, setRefreshing] = useState(false);
+  const [offset, setOffset] = useState(1);
   const onRefresh = React.useCallback(() => {
       // change this once i fix feed data
     setRefreshing(true);
@@ -26,12 +27,23 @@ function Home() {
     FetchFeed();
   }, []);
   function FetchFeed(){
-    fetch("http://192.168.1.7:3000/feed/1")
+    console.log('fetch')
+    fetch("http://10.129.2.181:3000/feed",{
+      method: "POST",
+      body: JSON.stringify({
+        id: currentUser.id,
+        page: offset,
+      }),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
-        setFeedArray(data);
-        setRefreshing(false)
+        setFeedArray(data.reverse());
+        setRefreshing(false);
+        setOffset((state)=>state+=1);
       });
   }
   
@@ -42,7 +54,7 @@ function Home() {
     
     function handlePostComment(){
       // :user_id, :post_id,:content
-      fetch("http://192.168.1.7:3000/comment", {
+      fetch("http://10.129.2.181:3000/comment", {
           method: "POST",
           body: JSON.stringify({
             user_id: currentUser.id,
@@ -61,7 +73,7 @@ function Home() {
           });
     }
     useEffect(() => {
-      fetch(`http://192.168.1.7:3000/comments/${post_id}`)
+      fetch(`http://10.129.2.181:3000/comments/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -74,6 +86,8 @@ function Home() {
       data={commentsArray}
       renderItem={({ item }) => <CommentCard item={item} ></CommentCard>}
       keyExtractor={(item) => item.id}
+      onEndReachedThreshold={0}
+      onEndReached={FetchFeed}
     />
     <View style={styles.addCommentView}>
     <Image style={styles.addCommentUser} source={{uri: currentUser.avatar_url}}/>
@@ -112,7 +126,7 @@ function Home() {
     const { post_id } = route.params;
     const [likeArray, setLikeArray] = useState([])
     useEffect(() => {
-      fetch(`http://192.168.1.7:3000/likes/${post_id}`)
+      fetch(`http://10.129.2.181:3000/likes/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);

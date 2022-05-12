@@ -59,11 +59,11 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
                 
                 <View style={styles.cardFooter}>
                 <View style={styles.hashtagView}>
-                    {item.tags.map(item=>{
+                    {item.tags? item.tags.map(item=>{
                         return(
-                            <Text style={styles.hashtagText}>#{item.name}</Text>
+                            <Text key={item.id} style={styles.hashtagText}>#{item.name}</Text>
                         )
-                    })}
+                    }): null}
                 </View>
                 <TouchableOpacity onPress={()=>handleOpenLikes(item.id)}>
                 <Text style={styles.counter}>Liked by {item.likes_count}</Text>

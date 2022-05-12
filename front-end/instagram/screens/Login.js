@@ -23,7 +23,7 @@ function Login() {
       function handleSignUp(){
           console.log(password)
           if(password === passwordConfirmation){
-            fetch("http://192.168.1.7:3000/signup", {
+            fetch("http://10.129.2.181:3000/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +63,7 @@ function Login() {
       }
     function handleLogIn(){
         // console.log("login")
-        fetch("http://192.168.1.7:3000/login", {
+        fetch("http://10.129.2.181:3000/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
