@@ -17,6 +17,7 @@ import { Dimensions } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSelector } from "react-redux";
 import Instagram from './Instagram'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 const Stack = createStackNavigator();
 function OptionPicker({ navigation }) {
   const isFocused = useIsFocused();
@@ -129,14 +130,16 @@ function PhotoTaken({ route,navigation }) {
         placeholder="Write a caption"
         placeholderTextColor="rgba(255, 255, 255, 0.5)"
       />
+      <View style={styles.buttonView}>
       <TouchableOpacity onPress={() => handleSubmit()} style={styles.checkmark}>
-        <Ionicons name="ios-checkmark" size={25} color="black" />
+        <Ionicons name="ios-checkmark" size={50} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('filter',{
+      <TouchableOpacity style={styles.checkmark} onPress={() => navigation.navigate('filter',{
         photo: image.uri
       })}>
-        <Ionicons name="ios-checkmark" size={100} color="black" />
+        <MaterialCommunityIcons name="pen-plus" size={50} color="black" />
       </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -192,14 +195,6 @@ function Camer() {
         name="Photo"
         component={PhotoTaken}
         options={{
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => alert("This is a button!")}
-              style={styles.headerButton}
-            >
-              <Ionicons name="ios-checkmark" size={25} color="black" />
-            </TouchableOpacity>
-          ),
           title: ''
         }}
       />
@@ -212,6 +207,11 @@ const styles = StyleSheet.create({
   // mainView:{
   //      flex: 1, alignItems: 'center', justifyContent: 'center'
   // },
+  buttonView:{
+    display: "flex",
+    flexDirection: "row",
+    
+  },
   ortext:{
     marginRight: "auto",
     marginLeft: "auto",

@@ -20,6 +20,7 @@ import PostCard from "../components/PostCard";
 import { Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 import * as FaceDetector from "expo-face-detector";
+import { AntDesign } from '@expo/vector-icons';   
 const Stack = createStackNavigator();
 function Account() {
   const dispatch = useDispatch();
@@ -430,6 +431,9 @@ function Account() {
         if(faces[0].smilingProbability > 0.5){
           setIsSmiling(true)
         }
+        if(faces[0].smilingProbability < 0.5){
+          setIsSmiling(false)
+        }
       }
       // console.log(image);
     }
@@ -453,7 +457,7 @@ function Account() {
           >
             <View style={styles.buttonContainer}>
               <TouchableOpacity
-                style={styles.button}
+                style={styles.flipButton}
                 onPress={() => {
                   setType(
                     type === Camera.Constants.Type.back
@@ -462,7 +466,7 @@ function Account() {
                   );
                 }}
               >
-                <Text style={styles.text}> Flip </Text>
+                <Ionicons name="camera-reverse" size={50} color="white" />
               </TouchableOpacity>
             </View>
           </Camera>
@@ -476,7 +480,7 @@ function Account() {
         >
           <Ionicons name="ios-stop-circle-outline" size={75} color="black" />
           {/* ios-stop-circle-outline */}
-        </TouchableOpacity>: null}
+        </TouchableOpacity>: <AntDesign style={styles.captureButton} name="smileo" size={75} color="black" />}
       </View>
     );
   }
@@ -664,6 +668,10 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: Dimensions.get("window").width * 0.02,
+  },
+  flipButton: {
+    alignItems: 'center',
+    alignSelf: 'flex-end'
   },
  
 });

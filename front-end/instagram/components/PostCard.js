@@ -6,7 +6,13 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
     // console.log(item)
     const [isLiked, setIsLiked] = useState(false);
     function handleLike(){
-        setIsLiked(!isLiked);
+        if (isLiked){   
+            setIsLiked(false)
+            item.likes_count --;
+        }else{
+            setIsLiked(true)
+            item.likes_count ++;
+        }
     }
     // function handleComment(){
     //     navigation.navigate('Comments',{
@@ -21,6 +27,12 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
     function handleUserProfile(){
         // console.log("userID", item.user.id)
         navigation.navigate("UserProfile", { user_id: item.user.id})
+    }
+    function DaysAgo(){
+        //2022-05-12T01:22:24.961Z
+        let x = item.created_at
+        // x.split('T')
+        return x
     }
     return(
         <View style={styles.mainView}>
@@ -44,7 +56,15 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
                     <Ionicons name="chatbubble-outline" size={24} color="black" style={styles.heartIcon}/>
                 </TouchableOpacity>
                 </View>
+                
                 <View style={styles.cardFooter}>
+                <View style={styles.hashtagView}>
+                    {item.tags.map(item=>{
+                        return(
+                            <Text style={styles.hashtagText}>#{item.name}</Text>
+                        )
+                    })}
+                </View>
                 <TouchableOpacity onPress={()=>handleOpenLikes(item.id)}>
                 <Text style={styles.counter}>Liked by {item.likes_count}</Text>
                 </TouchableOpacity>
@@ -62,7 +82,7 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
                     <Text style={styles.date}> Add a comment...</Text>
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.date}>3 days ago</Text>
+                <Text style={styles.date}>{item.created_at.split('T')[0]}</Text>
             </View>
         </View>
     )
@@ -109,13 +129,13 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     userName:{
-        fontSize: 9,
+        fontSize: 12,
         color: 'black',
         fontWeight:"bold",
         marginLeft: 10
     },
     captionText:{
-        fontSize: 9,
+        fontSize: 12,
         color: 'black',
         marginLeft: 2
     },
@@ -128,16 +148,27 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 5,
+        marginVertical: 10,
+        height: 20,
     },
     secondLogo:{
-        width: 20,
-        height: 20,
+        width: 25,
+        height: 25,
         borderRadius: 180,
         marginLeft: 10,
     },counter:{
-        fontSize:10,
+        fontSize:12,
         marginHorizontal: 10,
+    },hashtagView:{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical:2,
+    },
+    hashtagText:{
+        fontSize:12,
+        color: 'rgba(0, 200, 252,1)',
+        marginLeft: 10,
     },
 
 })
