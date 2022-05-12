@@ -73,6 +73,9 @@ class UsersController < ApplicationController
       render json: { message: 'Error', authenticated: false }
     end
   end
+  def users
+    render json: User.all
+  end
   private
 
   def user_params

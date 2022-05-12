@@ -7,6 +7,7 @@ import Home from './screens/Home'
 import Post from './screens/Post'
 import Account from './screens/Account'
 import Login from './screens/Login'
+import SearchScreen from './screens/SearchScreen'
 import Camer from './components/Camer'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Provider } from "react-redux";
@@ -72,6 +73,8 @@ function PlaceHolder(){
               iconName = focused ? 'person-circle' : 'person-circle-outline';
             }else if (route.name === 'Post'){
               iconName = focused ? 'add-circle' : 'add-circle-outline';
+            }else if(route.name === 'Search'){
+              iconName = focused ? 'search' : 'search';
             }
             // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
@@ -81,6 +84,10 @@ function PlaceHolder(){
         })}
       >
         <Tab.Screen name="Home" component={Home} options={{ title: 'Home' , headerShown: false,
+    headerTransparent: true, 
+        }}/>
+        
+        <Tab.Screen name="Search" component={SearchScreen} options={{ title: 'Search' , headerShown: false,
     headerTransparent: true, 
         }}/>
         <Tab.Screen name="Post" component={Camer} options={{ title: 'Post' , headerShown: false,

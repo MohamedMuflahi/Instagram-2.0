@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post '/user/updateAvatar', to: 'users#updateAvatar' # update User Data
   post '/signup', to: 'users#create' # update User Data
   get '/user/:id', to: 'users#get_user' # get users
+  get "/users", to: 'users#users'
 
   # POST ROUTES
   post '/post', to: 'posts#create' # create a new post
