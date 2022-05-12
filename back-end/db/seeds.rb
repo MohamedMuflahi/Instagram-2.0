@@ -43,10 +43,6 @@ jack.avatar.attach(
 )
 puts 'Seeding Follows...'
 Follow.create(follower_id: mohamed.id, followee_id: ben.id);
-puts 'Seeding Messages...'
-Message.create(content: 'Hello',sender_id:mohamed.id,receiver_id: ben.id)
-Message.create(content: 'How are you?',sender_id:mohamed.id,receiver_id: ben.id)
-Message.create(content: 'Good you?',sender_id:ben.id,receiver_id: mohamed.id)
 puts 'Seeding Posts...'
 20.times do
     a = Faker::Number.between(from: 1, to: 4)

@@ -91,8 +91,8 @@ function postImage(image,caption){
     formData.append("image", { uri: localUri, name: filename, type });
     formData.append("caption", caption);
     formData.append("user_id", currentUser.id);
-   console.log(formData);
-    fetch("http://10.129.2.181:3000/post", {
+   // console.log(formData);
+    fetch("http://192.168.1.7:3000/post", {
         method: "POST",
         body: formData,
         headers: {
@@ -102,7 +102,7 @@ function postImage(image,caption){
         .then((response) => response.json())
         .then((data) => {
           // console.log(data);
-          console.log(data)
+          // console.log(data)
           navigation.navigate("gallery")
         })
         .catch(error =>console.log(error))

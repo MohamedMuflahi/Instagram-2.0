@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get '/user/posts/:id', to: 'users#posts' #get users posts using user id
   post '/user/update', to: 'users#update' # update User Data
   post '/user/updateAvatar', to: 'users#updateAvatar' # update User Data
+  post '/signup', to: 'users#create' # update User Data
   get '/user/:id', to: 'users#get_user' # get users
 
   # POST ROUTES

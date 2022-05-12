@@ -24,7 +24,7 @@ class ApplicationController < ActionController::API
             
         else 
             render json: {
-                message: 'This username/password combination cannot be found',
+                message: 'Incorrect Username/Password',
                 authenticated: false
             }
         end

@@ -3,6 +3,11 @@ class UsersController < ApplicationController
     def create
         user = User.create!(user_params)
         if user
+          user.avatar.attach(
+            io: File.open('./public/default.png'),
+            filename: 'default.png',
+            content_type: 'application/png'
+        )
             payload = {'user_id': user.id}
             token = encode(payload)
             render json: {
@@ -31,7 +36,7 @@ class UsersController < ApplicationController
     if user
       user.username = params[:username]
       user.bio = params[:bio]
-      # user.password = user.password;
+      # user.delete(:password) unless params[:password].present?
       user.save!(validate: false)
       render json: user
     else
@@ -71,10 +76,12 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:user_id,:username, :password,:avatar,:bio)
+    params.permit(:username,:bio,:password)
   end
   def update_params
-    params.require(:user).permit(:username,:bio)
+    params.require(:user).permit(:user_id,:username,:bio)
+    update_params.delete(:password) unless user_params[:password].present?
+    update_params
   end
 
 end

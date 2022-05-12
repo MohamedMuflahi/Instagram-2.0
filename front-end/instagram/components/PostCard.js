@@ -19,7 +19,7 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
     //     })
     // }
     function handleUserProfile(){
-        console.log("userID", item.user.id)
+        // console.log("userID", item.user.id)
         navigation.navigate("UserProfile", { user_id: item.user.id})
     }
     return(

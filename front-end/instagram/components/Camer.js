@@ -36,7 +36,7 @@ function OptionPicker({ navigation }) {
     navigation.navigate("Photo", {
       image: photo,
     });
-    console.log("photo", photo);
+    // console.log("photo", photo);
   };
   useEffect(() => {
     (async () => {
@@ -52,10 +52,6 @@ function OptionPicker({ navigation }) {
     return <Text>No access to camera</Text>;
   }
   const turnOnCamera = () => {};
-  function handleFacesDetected({faces, image}){
-    console.log(faces);
-    console.log(image);
-  }
   return (
     <View style={styles.container}>
       {isFocused && (
@@ -65,14 +61,6 @@ function OptionPicker({ navigation }) {
           ref={(ref) => {
             camera = ref;
           }}
-          onFacesDetected={handleFacesDetected}
-    faceDetectorSettings={{
-      mode: FaceDetector.FaceDetectorMode.fast,
-      detectLandmarks: FaceDetector.FaceDetectorLandmarks.all,
-      runClassifications: FaceDetector.FaceDetectorClassifications.all,
-      minDetectionInterval: 100,
-      tracking: true,
-    }}
         >
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -118,7 +106,7 @@ function PhotoTaken({ route,navigation }) {
   formData.append("caption", caption);
   formData.append("user_id", currentUser.id);
   function handleSubmit() {
-    fetch("http://10.129.2.181:3000/post", {
+    fetch("http://192.168.1.7:3000/post", {
       method: "POST",
       body: formData,
       headers: {

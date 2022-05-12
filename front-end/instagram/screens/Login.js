@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Text, View,StyleSheet, TextInput, TouchableOpacity,Image} from 'react-native';
+import { Text, View,StyleSheet, TextInput, TouchableOpacity,Image,Alert } from 'react-native';
 import { Dimensions } from 'react-native'
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,8 @@ function Login() {
     const dispatch = useDispatch();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState("");
+    const [isLogin,setIsLogin] = useState(true);
     const storeData = async (value) => {
         try {
           await AsyncStorage.setItem('@storage_Key', value)
@@ -18,9 +20,50 @@ function Login() {
           // saving error
         }
       }
+      function handleSignUp(){
+          console.log(password)
+          if(password === passwordConfirmation){
+            fetch("http://192.168.1.7:3000/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            password,
+            bio: "Go to User Settings to add a BIO"
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+              // console.log("logged in", data.token)
+              if(data.message){
+                Alert.alert(
+                  `${data.message}`,
+                  "Please Try Again",
+                  [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                  ]
+                );
+              }else{
+                storeData(data.token)
+                dispatch(setValue(data.user));
+              }
+            
+          });
+          }else{
+            Alert.alert(
+              "Passwords Don't Match",
+              [
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+              ]
+            );
+          }
+      }
     function handleLogIn(){
         // console.log("login")
-        fetch("http://10.129.2.181:3000/login", {
+        fetch("http://192.168.1.7:3000/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -34,14 +77,26 @@ function Login() {
           .then((response) => response.json())
           .then((data) => {
               // console.log("logged in", data.token)
-            storeData(data.token)
+              if(data.message){
+                Alert.alert(
+                  `${data.message}`,
+                  "Please Try Again",
+                  [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                  ]
+                );
+              }else{
+                storeData(data.token)
             dispatch(setValue(data.user));
+              }
+            
           });
     }
     
   return (
       <>
-      <LinearGradient
+      {isLogin? <>
+        <LinearGradient
         // Background Linear Gradient
         colors={["rgba(176,30,137,1)", " rgba(208,49,85,1)"]}
         style={styles.background}
@@ -68,9 +123,49 @@ function Login() {
         <Text style={styles.centerText}>Log In</Text>
       </TouchableOpacity>
     </View>
-    <TouchableOpacity style={styles.signUpButton}>
+    <TouchableOpacity onPress={()=>setIsLogin(false)} style={styles.signUpButton}>
         <Text style={styles.centerText}>Dont't have an account? Sign Up.</Text>
       </TouchableOpacity>
+      </>: <>
+      <LinearGradient
+        // Background Linear Gradient
+        colors={["rgba(176,30,137,1)", " rgba(208,49,85,1)"]}
+        style={styles.background}
+      />
+    <View style={styles.loginView}> 
+    {/* logo-instagram */}
+    <Ionicons  style={styles.instaLogo} name="logo-instagram" size={150} color="white" />
+      <TextInput
+        style={styles.input}
+        onChangeText={setUsername}
+        value={username}
+        placeholder="Username"
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setPassword}
+        value={password}
+        placeholder="Password"
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        secureTextEntry={true}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setPasswordConfirmation}
+        value={passwordConfirmation}
+        placeholder="Confirm Password"
+        placeholderTextColor="rgba(255, 255, 255, 0.5)"
+        secureTextEntry={true}
+      />
+      <TouchableOpacity style={styles.loginButton} onPress={()=>handleSignUp()}>
+        <Text style={styles.centerText}>Sign up</Text>
+      </TouchableOpacity>
+    </View>
+    <TouchableOpacity onPress={()=>setIsLogin(true)} style={styles.signUpButton}>
+        <Text style={styles.centerText}>Have an account? Log in</Text>
+      </TouchableOpacity>
+      </>}
       </>
   );
 }

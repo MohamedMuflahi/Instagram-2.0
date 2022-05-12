@@ -17,8 +17,8 @@ class User < ApplicationRecord
     has_many :likes
     has_one_attached :avatar
     has_secure_password
-    # validates :username, presence: true, uniqueness: { case_sensitive: false }
-    # validates :password, presence: true
+    validates :username, presence: true, uniqueness: { case_sensitive: false }
+    validates :password, presence: true, allow_nil: true
     def avatar_url
         avatar.url
     end

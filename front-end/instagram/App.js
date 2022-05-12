@@ -20,7 +20,7 @@ function PlaceHolder(){
   const currentUser = useSelector((state) => state.user.value);
   const dispatch = useDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(currentUser.id);
-  console.log(!!currentUser.id)
+  // console.log(!!currentUser.id)
   const [token, setToken] = useState('');
   const getData = async () => {
     try {
@@ -28,7 +28,7 @@ function PlaceHolder(){
       if(value !== null) {
         // value previously stored
         setToken(value);
-        console.log(value);
+        // console.log(value);
       }
     } catch(e) {
       // error reading value
@@ -36,18 +36,18 @@ function PlaceHolder(){
   }
   function fetchProfile() {
     
-    fetch("http://10.129.2.181:3000/profile", {
+    fetch("http://192.168.1.7:3000/profile", {
       headers: { Authentication: `Bearer ${token}` },
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         dispatch(setValue(result));
       });
   }
   useEffect(() => {
     getData();
-    fetchProfile();
+    //fetchProfile();
   }, [token])
   const MyTheme = {
     ...DefaultTheme,

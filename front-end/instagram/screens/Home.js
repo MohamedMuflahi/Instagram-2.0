@@ -13,7 +13,7 @@ const wait = timeout => {
   };
 function Home() {
   const currentUser = useSelector((state) => state.user.value);
-  console.log(currentUser)
+  // console.log(currentUser)
   const [feedArray, setFeedArray] = useState([]);
  
   const [refreshing, setRefreshing] = useState(false);
@@ -26,7 +26,7 @@ function Home() {
     FetchFeed();
   }, []);
   function FetchFeed(){
-    fetch("http://10.129.2.181:3000/feed/1")
+    fetch("http://192.168.1.7:3000/feed/1")
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -42,7 +42,7 @@ function Home() {
     
     function handlePostComment(){
       // :user_id, :post_id,:content
-      fetch("http://10.129.2.181:3000/comment", {
+      fetch("http://192.168.1.7:3000/comment", {
           method: "POST",
           body: JSON.stringify({
             user_id: currentUser.id,
@@ -55,13 +55,13 @@ function Home() {
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data);
+            // console.log(data);
             setCommentsArray([...commentsArray,data]);
             setCommentInput('');
           });
     }
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/comments/${post_id}`)
+      fetch(`http://192.168.1.7:3000/comments/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -94,7 +94,7 @@ function Home() {
   }
   function CommentCard({item}){
     const [isliked, setIsliked] = useState(false);
-    console.log(item)
+    // console.log(item)
     return(
       <View style={styles.cardView}>
         <Image style={styles.commentLogo} source={{uri: item.user.avatar_url}}/>
@@ -112,7 +112,7 @@ function Home() {
     const { post_id } = route.params;
     const [likeArray, setLikeArray] = useState([])
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/likes/${post_id}`)
+      fetch(`http://192.168.1.7:3000/likes/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginRight: "auto",
     marginLeft: "auto",
-    marginVertical: 15,
+    marginVertical: 5,
     width:  Dimensions.get("window").width-20,
     backgroundColor: 'white',
     borderWidth: 0.5,
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
   commentLogo:{
     width:40, height: 40,
     marginRight: 10,
+    borderRadius: 90,
   },
   usernameText:{
     fontWeight:'bold',
@@ -228,6 +229,7 @@ const styles = StyleSheet.create({
     // backgroundColor:"red",
     marginLeft:10,    //alignSelf: "flex-start",
     width:50, height: 50,
+    borderRadius: 90,
   },
   postText:{
     color:"darkcyan"

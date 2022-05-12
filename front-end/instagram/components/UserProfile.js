@@ -36,10 +36,10 @@ function UserProfile({route}) {
     wait(1000).then(() => GetPostData());
   }, []);
   function getUser(){
-    fetch(`http://10.129.2.181:3000/user/${user_id}`)
+    fetch(`http://192.168.1.7:3000/user/${user_id}`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data)
+      // console.log(data)
       GetPostData();
       setUser(data)
     });
@@ -49,10 +49,10 @@ function UserProfile({route}) {
     CheckFollowed();
   }, []);
   function GetPostData() {
-    fetch(`http://10.129.2.181:3000/user/posts/${user_id}`)
+    fetch(`http://192.168.1.7:3000/user/posts/${user_id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         setPostsArray(data);
         setRefreshing(false);
       });
@@ -65,7 +65,7 @@ function UserProfile({route}) {
     })
   }
   function handleUnfollow(){
-    fetch("http://10.129.2.181:3000/unfollow", {
+    fetch("http://192.168.1.7:3000/unfollow", {
       method: "POST",
       body: JSON.stringify({
         user_id: currentUser.id,
@@ -77,12 +77,12 @@ function UserProfile({route}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setIsFollowed(false);
       })
   }
   function handlefollow(){
-    fetch("http://10.129.2.181:3000/follow", {
+    fetch("http://192.168.1.7:3000/follow", {
       method: "POST",
       body: JSON.stringify({
         follower_id: currentUser.id,
@@ -94,7 +94,7 @@ function UserProfile({route}) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setIsFollowed(true);
       })
   }
@@ -165,7 +165,7 @@ function UserProfile({route}) {
     const { post_id } = route.params;
     const [commentsArray, setCommentsArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/comments/${post_id}`)
+      fetch(`http://192.168.1.7:3000/comments/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -182,7 +182,7 @@ function UserProfile({route}) {
     )
   }
   function CommentCard({item}){
-    console.log(item)
+    // console.log(item)
     return(
       <View style={styles.cardView}>
         <Image style={styles.commentLogo} source={{uri: item.user.avatar_url}}/>
@@ -197,7 +197,7 @@ function UserProfile({route}) {
     const { post_id } = route.params;
     const [likeArray, setLikeArray] = useState([])
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/likes/${post_id}`)
+      fetch(`http://192.168.1.7:3000/likes/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -227,7 +227,7 @@ function UserProfile({route}) {
   function FollowersPage({ navigation }) {
     const [followersArray, setFollowersArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/followers/${user_id}`)
+      fetch(`http://192.168.1.7:3000/followers/${user_id}`)
         .then((response) => response.json())
         .then((data) => {
           // console.log(data);
@@ -267,7 +267,7 @@ function UserProfile({route}) {
   function FollowingsPage({ navigation }) {
     const [followingArray, setFollowingArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/following/${user_id}`)
+      fetch(`http://192.168.1.7:3000/following/${user_id}`)
         .then((response) => response.json())
         .then((data) => {
           //console.log(data);
