@@ -15,10 +15,10 @@ function Post(){
       quality: 1,
     });
 
-    console.log(result);
+    //console.log(result);
 
     if (!result.cancelled) {
-      console.log("result",result);
+      //console.log("result",result);
         setImage(result.uri);
     }
 };

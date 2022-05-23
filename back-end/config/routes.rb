@@ -11,11 +11,11 @@ Rails.application.routes.draw do
   post '/signup', to: 'users#create' # update User Data
   get '/user/:id', to: 'users#get_user' # get users
   get "/users", to: 'users#users'
-
+  get '/pro/:id', to: 'users#idProfile'
   # POST ROUTES
   post '/post', to: 'posts#create' # create a new post
   get '/post/:id', to: 'posts#show' # detailed Post info by ID
-  get '/feed/:id', to: 'posts#feed' # feed
+  post '/feed', to: 'posts#feed' # feed
 
   # Like routes
   post '/like', to: 'likes#create' # create like join table

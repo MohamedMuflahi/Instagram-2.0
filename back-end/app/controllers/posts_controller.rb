@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
+    
     def create
         post = Post.create!(post_params)
+        PostTag.create(post_id: post.id,tag_id: 3)
         if post
             render json: post
         else 
@@ -33,8 +35,9 @@ class PostsController < ApplicationController
             # puts("HERE",e["id"])
             array4.push(e["id"])
         end
-        x = Post.where(id: array4)
+        x = Post.where(id: array4).page(params[:page]).per_page(30)
         # options = { each_serializer: PostSerializer }
+       
         # output = ActiveModelSerializers::PostSerializer.new(array3, options).as_json #  x  = array3.as_json(only: [:id, :caption], methods: [:image_url,:comments_count,:likes_count, :post_count]) 
         render json: x
        end

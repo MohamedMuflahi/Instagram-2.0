@@ -30,7 +30,14 @@ class UsersController < ApplicationController
       render json: { message: 'Error', authenticated: false }
     end
   end
-
+  def idProfile
+    user = User.find(params[:id])
+    if user
+      render json: user
+    else
+      render json: { message: 'Error', authenticated: false }
+    end
+  end
   def update
     user = User.find_by(id:params[:user_id])
     if user

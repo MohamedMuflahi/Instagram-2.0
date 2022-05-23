@@ -8,6 +8,7 @@ import UserProfile from "../components/UserProfile";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Stack = createStackNavigator();
+
 const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -15,7 +16,7 @@ function Home() {
   const currentUser = useSelector((state) => state.user.value);
   // console.log(currentUser)
   const [feedArray, setFeedArray] = useState([]);
-  console.log(feedArray)
+  //console.log(feedArray)
   const [refreshing, setRefreshing] = useState(false);
   const [offset, setOffset] = useState(1);
   const onRefresh = React.useCallback(() => {
@@ -27,7 +28,7 @@ function Home() {
     FetchFeed();
   }, []);
   function FetchFeed(){
-    console.log('fetch')
+    //console.log('fetch')
     fetch("http://10.129.2.181:3000/feed",{
       method: "POST",
       body: JSON.stringify({
@@ -177,7 +178,7 @@ function Home() {
   
   return (
     <Stack.Navigator>
-      <Stack.Screen name='cards' component={CreateCards}  options={{headerTitle:  "Instagram" }}/>
+      <Stack.Screen name='cards' component={CreateCards}  options={{headerTitle:  "HUMAN" }}/>
       <Stack.Screen name='Comments' component={Comments}/>
       <Stack.Screen name='Likes' component={Likes}/>
       <Stack.Screen name='UserProfile' component={UserProfile} options={{headerTitle:  ""}} />

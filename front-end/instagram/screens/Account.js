@@ -24,6 +24,7 @@ import { AntDesign } from '@expo/vector-icons';
 const Stack = createStackNavigator();
 function Account() {
   const dispatch = useDispatch();
+  const [token, setToken] = useState('');
   //let {vw, vh, vmin, vmax} = require('react-native-viewport-units');
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -31,11 +32,22 @@ function Account() {
   const currentUser = useSelector((state) => state.user.value);
   const [postsArray, setPostsArray] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  function fetchProfile() {
+    
+    fetch(`http://10.129.2.181:3000/pro/${currentUser.id}`)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        dispatch(setValue(result));
+      });
+  }
   const onRefresh = React.useCallback(() => {
     // change this once i fix feed data
     setRefreshing(true);
+    fetchProfile();
     wait(1000).then(() => {
       GetPostData(currentUser.id);
+
     });
   }, []);
   useEffect(() => {
@@ -137,7 +149,7 @@ function Account() {
     );
   }
   function CommentCard({ item }) {
-    console.log(item);
+    //console.log(item);
     return (
       <View style={styles.cardView}>
         <Image
@@ -595,6 +607,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 10,
+    borderRadius: 90,
   },
   usernameText: {
     fontWeight: "bold",

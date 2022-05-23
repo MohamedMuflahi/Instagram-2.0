@@ -113,7 +113,7 @@ function postImage(image,caption){
 
     const result = await image.glView.capture();
     //console.log(result);
-    postImage(result.uri,"wow");
+    postImage(result.uri,"Edited Photo");
   };
   return (
   <ScrollView>
@@ -135,7 +135,7 @@ function postImage(image,caption){
           />
         ))}
         </View>
-        <TouchableOpacity style={styles.checkmark} ononPress={saveImage}>
+        <TouchableOpacity style={styles.checkmark} onPress={saveImage}>
           <Ionicons name="ios-checkmark" size={50} color="black" />
         </TouchableOpacity>
         

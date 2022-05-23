@@ -21,7 +21,7 @@ function Login() {
         }
       }
       function handleSignUp(){
-          console.log(password)
+          //console.log(password)
           if(password === passwordConfirmation){
             fetch("http://10.129.2.181:3000/signup", {
           method: "POST",
