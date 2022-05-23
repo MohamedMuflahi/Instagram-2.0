@@ -93,7 +93,7 @@ function postImage(image,caption){
     formData.append("caption", caption);
     formData.append("user_id", currentUser.id);
    // console.log(formData);
-    fetch("http://10.129.2.181:3000/post", {
+    fetch("http://192.168.1.7:3000/post", {
         method: "POST",
         body: formData,
         headers: {

@@ -29,7 +29,7 @@ function Home() {
   }, []);
   function FetchFeed(){
     //console.log('fetch')
-    fetch("http://10.129.2.181:3000/feed",{
+    fetch("http://192.168.1.7:3000/feed",{
       method: "POST",
       body: JSON.stringify({
         id: currentUser.id,
@@ -55,7 +55,7 @@ function Home() {
     
     function handlePostComment(){
       // :user_id, :post_id,:content
-      fetch("http://10.129.2.181:3000/comment", {
+      fetch("http://192.168.1.7:3000/comment", {
           method: "POST",
           body: JSON.stringify({
             user_id: currentUser.id,
@@ -69,17 +69,20 @@ function Home() {
           .then((response) => response.json())
           .then((data) => {
             // console.log(data);
-            setCommentsArray([...commentsArray,data]);
-            setCommentInput('');
+            getComments();
+            // setCommentInput('');
           });
     }
-    useEffect(() => {
-      fetch(`http://10.129.2.181:3000/comments/${post_id}`)
+    function getComments(){
+      fetch(`http://192.168.1.7:3000/comments/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
         setCommentsArray(data);
       });
+    }
+    useEffect(() => {
+      getComments();
     }, [])
     return(
       <>
@@ -127,7 +130,7 @@ function Home() {
     const { post_id } = route.params;
     const [likeArray, setLikeArray] = useState([])
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/likes/${post_id}`)
+      fetch(`http://192.168.1.7:3000/likes/${post_id}`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);

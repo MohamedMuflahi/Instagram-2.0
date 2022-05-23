@@ -1,6 +1,23 @@
 import React, {useState} from 'react';
 import { Text, View,StyleSheet,Image,TouchableOpacity} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { TapGestureHandler, State } from 'react-native-gesture-handler';
+
+function DoubleTapButton({ onDoubleTap, children }) {
+  const onHandlerStateChange = ({ nativeEvent }) => {
+    if (nativeEvent.state === State.ACTIVE) {
+      onDoubleTap && onDoubleTap();
+    }
+  };
+
+  return (
+    <TapGestureHandler
+      onHandlerStateChange={onHandlerStateChange}
+      numberOfTaps={2}>
+      {children}
+    </TapGestureHandler>
+  );
+}
 
 function PostCard({item, navigation,handleComment,handleOpenLikes}){
     // console.log(item)
@@ -24,6 +41,7 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
     //         post_id: item.id
     //     })
     // }
+
     function handleUserProfile(){
         // console.log("userID", item.user.id)
         navigation.navigate("UserProfile", { user_id: item.user.id})
@@ -42,10 +60,11 @@ function PostCard({item, navigation,handleComment,handleOpenLikes}){
                 <Text style={styles.cardName}>{item.user.username}</Text>
                 <Ionicons style={styles.threeDots} name="ellipsis-horizontal" size={16} color="black"/>
             </TouchableOpacity>
-            <View>
-                {/*  */}
-                <Image style={styles.mainImage} source={{uri: item.image_url}}/>
-            </View>
+            <DoubleTapButton onDoubleTap={() => alert('double tap!!!')}>
+                <View>
+                    <Image style={styles.mainImage} source={{uri: item.image_url}}/>
+                </View>
+            </DoubleTapButton>
             <View style={styles.cardFooter}>
                 <View style={styles.cardHeader}>
                 <TouchableOpacity onPress={()=>handleLike()}>

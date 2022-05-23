@@ -19,7 +19,7 @@ function SearchScreen() {
   const [users, setUsers] = useState([]);
   const [input, setInput] = useState("");
   useEffect(() => {
-    fetch("http://10.129.2.181:3000/users")
+    fetch("http://192.168.1.7:3000/users")
       .then((response) => response.json())
       .then((data) => {
         setUsers(data);

@@ -34,7 +34,7 @@ function Account() {
   const [refreshing, setRefreshing] = useState(false);
   function fetchProfile() {
     
-    fetch(`http://10.129.2.181:3000/pro/${currentUser.id}`)
+    fetch(`http://192.168.1.7:3000/pro/${currentUser.id}`)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -54,7 +54,7 @@ function Account() {
     GetPostData(currentUser.id);
   }, []);
   function GetPostData(id) {
-    fetch(`http://10.129.2.181:3000/user/posts/${id}`)
+    fetch(`http://192.168.1.7:3000/user/posts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         //console.log(data)
@@ -133,7 +133,7 @@ function Account() {
     const { post_id } = route.params;
     const [commentsArray, setCommentsArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/comments/${post_id}`)
+      fetch(`http://192.168.1.7:3000/comments/${post_id}`)
         .then((response) => response.json())
         .then((data) => {
           // console.log(data);
@@ -167,7 +167,7 @@ function Account() {
     const { post_id } = route.params;
     const [likeArray, setLikeArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/likes/${post_id}`)
+      fetch(`http://192.168.1.7:3000/likes/${post_id}`)
         .then((response) => response.json())
         .then((data) => {
           // console.log(data);
@@ -199,7 +199,7 @@ function Account() {
   function FollowersPage({ navigation }) {
     const [followersArray, setFollowersArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/followers/${currentUser.id}`)
+      fetch(`http://192.168.1.7:3000/followers/${currentUser.id}`)
         .then((response) => response.json())
         .then((data) => {
           // console.log(data);
@@ -239,7 +239,7 @@ function Account() {
   function FollowingsPage({ navigation }) {
     const [followingArray, setFollowingArray] = useState([]);
     useEffect(() => {
-      fetch(`http://10.129.2.181:3000/following/${currentUser.id}`)
+      fetch(`http://192.168.1.7:3000/following/${currentUser.id}`)
         .then((response) => response.json())
         .then((data) => {
           //console.log(data);
@@ -315,7 +315,7 @@ function Account() {
     const [username, setUsername] = useState("");
     const [bio, setBio] = useState("");
     function handleChangeDetails() {
-      fetch("http://10.129.2.181:3000/user/update", {
+      fetch("http://192.168.1.7:3000/user/update", {
         method: "POST",
         body: JSON.stringify({
           user_id: currentUser.id,
@@ -380,7 +380,7 @@ function Account() {
     formData.append("user_id", currentUser.id);
     function handleSubmit() {
       // console.log('clicked')
-      fetch("http://10.129.2.181:3000/user/updateAvatar", {
+      fetch("http://192.168.1.7:3000/user/updateAvatar", {
         method: "POST",
         body: formData,
         headers: {
